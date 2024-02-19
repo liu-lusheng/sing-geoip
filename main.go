@@ -168,6 +168,12 @@ func local(input string, output string, codes []string) error {
 	if err != nil {
 		return err
 	}
+	if len(codes) == 0 {
+		codes = make([]string, 0, len(countryMap))
+		for code := range countryMap {
+			codes = append(codes, code)
+		}
+	}
 	var writer *mmdbwriter.Tree
 	if rw.FileExists(output) {
 		writer, err = open(output, codes)
@@ -227,8 +233,8 @@ func release(source string, destination string) error {
 		return err
 	}
 
-        tagName := *sourceRelease.TagName
-        setActionOutput("tag", tagName)
+	tagName := *sourceRelease.TagName
+	setActionOutput("tag", tagName)
 
 	return nil
 }
@@ -240,7 +246,7 @@ func setActionOutput(name string, content string) {
 func main() {
 	var err error
 	if len(os.Args) >= 3 {
-		err = local(os.Args[1], os.Args[2], os.Args[2:])
+		err = local(os.Args[1], os.Args[2], os.Args[3:])
 	} else {
 		err = release("soffchen/geoip", "soffchen/sing-geoip")
 	}
